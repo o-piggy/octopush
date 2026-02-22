@@ -1,0 +1,566 @@
+/* ==========================================================================
+   USAGE GUIDE & PALETTE DEFINITIONS
+   ========================================================================== 
+   Primary Colors:
+   - Vanilla Cream (#F0E7D5): Used for main backgrounds, providing a warm, 
+     elegant base that reduces eye strain compared to pure white.
+   - Midnight Indigo (#212842): High-contrast dark shade used for primary text,
+     headings, buttons (CTAs), and strong accents.
+
+   Extended Neutral Palette (Complementary):
+   - Soft Slate (#4A5568): A muted grey-blue that bridges the contrast. Used for 
+     secondary text, descriptions, and subtle UI elements.
+   - Muted Gold (#C5A059): A sophisticated accent color used for subtle highlights, 
+     focus states, or secondary hover effects.
+   - Card Cream (#FAF6F0): A slightly lighter tint of Vanilla Cream to provide 
+     subtle elevation and separation for cards and inputs.
+   - Subtle Border (#DCD1BD): For dividing lines and structural borders.
+
+   Accessibility: 
+   - Midnight Indigo (#212842) on Vanilla Cream (#F0E7D5) yields a contrast 
+     ratio > 10:1, comfortably exceeding WCAG AA (4.5:1) requirements.
+   ========================================================================== */
+
+/* ==========================================================================
+   CSS VARIABLES
+   ========================================================================== */
+:root {
+    /* Color Palette */
+    --bg-primary: #F0E7D5;
+    --card-bg: #FAF6F0;
+    --text-primary: #212842;
+    --text-muted: #4A5568;
+    --accent-color: #212842;
+    --accent-hover: #151a2d;
+    --accent-gold: #C5A059;
+    --border-color: #DCD1BD;
+    --nav-glass-bg: rgba(240, 231, 213, 0.85);
+    
+    /* Typography */
+    --font-primary: 'Inter', sans-serif;
+    --base-line-height: 1.6;
+
+    /* Layout & Animation */
+    --transition: all 0.3s ease-in-out;
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --shadow-base: 0 4px 6px rgba(33, 40, 66, 0.05);
+    --shadow-hover: 0 12px 24px rgba(33, 40, 66, 0.12);
+}
+
+/* -----------------------------------------------------
+   Dark mode overrides (apply when body.dark-theme exists)
+   ----------------------------------------------------- */
+body.dark-theme {
+    /* swap to dark background with light text */
+    --bg-primary: #212842;
+    --card-bg: #2c334b;
+    --text-primary: #F0E7D5;
+    --text-muted: #C5A059;
+    --accent-color: #F0E7D5;
+    --accent-hover: #FAF6F0;
+    --border-color: #4A5568;
+    --nav-glass-bg: rgba(33, 40, 66, 0.85);
+}
+
+/* ==========================================================================
+   CSS RESET & BASE SETUP
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, figure {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-primary);
+    font-weight: 400;
+    line-height: var(--base-line-height);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Specific Element Handling */
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY & UTILITY CLASSES
+   ========================================================================== */
+h1, h2, h3, h4 {
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.text-primary { color: var(--text-primary); }
+.text-muted { color: var(--text-muted); }
+.bg-primary { background-color: var(--bg-primary); }
+.bg-card { background-color: var(--card-bg); }
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.section {
+    padding: 6rem 0;
+}
+
+.section-title {
+    font-size: 2.25rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    display: inline-block;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* ==========================================================================
+   LAYOUT & COMPONENT STYLING
+   ========================================================================== */
+
+/* HEADER & NAVBAR */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--nav-glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(220, 209, 189, 0.5);
+    padding: 1rem 0;
+}
+
+.header__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.nav__list {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.nav__link {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+/* Links Hover State per prompt */
+.nav__link:hover, .project-link:hover {
+    color: var(--accent-color);
+}
+
+.header__controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Theme Toggle Button */
+#theme-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+#theme-toggle:hover {
+    background: rgba(33, 40, 66, 0.05);
+}
+
+/* HERO SECTION */
+.hero {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero__content {
+    max-width: 800px; /* Constraints for readability */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero__title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.text-highlight {
+    color: var(--accent-gold);
+}
+
+.hero__subtitle {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+}
+
+.hero__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* BUTTONS */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.btn--primary {
+    background: var(--accent-color);
+    color: var(--bg-primary);
+}
+
+.btn--secondary {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn--outline {
+    background: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* Button Hover States */
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn--primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 4px 12px rgba(33, 40, 66, 0.2);
+}
+
+.btn--secondary:hover, .btn--outline:hover {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border-color: var(--text-primary);
+}
+
+/* ABOUT SECTION */
+.about__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.about__img {
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-base);
+    object-fit: cover;
+}
+
+.about__bio {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.about__bio p {
+    margin-bottom: 1rem;
+}
+
+/* PROJECTS SECTION */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.project-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-base);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.project-card__image {
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem; /* Break out of padding */
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+    overflow: hidden;
+}
+
+.project-card__image img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.project-card:hover .project-card__image img {
+    transform: scale(1.05);
+}
+
+.project-card__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.project-card__description {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.project-card__tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tag {
+    background: var(--bg-primary);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+}
+
+.project-card__links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.project-link {
+    color: var(--text-muted);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
+
+/* CONTACT SECTION */
+.contact__container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.contact__header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.contact__header p {
+    color: var(--text-muted);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-input, .form-textarea {
+    width: 100%;
+    padding: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    transition: var(--transition);
+}
+
+.form-input:focus, .form-textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(33, 40, 66, 0.1);
+}
+
+.btn--full {
+    width: 100%;
+}
+
+/* FOOTER */
+.footer {
+    padding: 3rem 0;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.footer__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.footer__copyright {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+}
+
+.social-link {
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+
+.social-link:hover {
+    color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   RESPONSIVENESS & MEDIA QUERIES
+   ========================================================================== */
+
+/* Strict Hamburger visibility setup for desktop */
+@media (min-width: 769px) {
+    .hamburger {
+        display: none !important;
+    }
+}
+
+/* Mobile & Tablet */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+
+    .section {
+        padding: 4rem 0;
+    }
+
+    /* Navbar behavior on mobile */
+    .nav {
+        display: none; /* Hide desktop nav links */
+    }
+
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        z-index: 1001;
+    }
+
+    .hamburger__line {
+        width: 24px;
+        height: 2px;
+        background-color: var(--text-primary);
+        transition: var(--transition);
+        border-radius: 2px;
+    }
+
+    /* Stack sections on mobile */
+    .hero__actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .about__grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .about__image-wrapper {
+        order: -1; /* Ensure image stays above text on mobile */
+        max-width: 300px;
+        margin: 0 auto;
+    }
+}
