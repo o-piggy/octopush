@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Professional Portfolio of [Your Name] - Senior Frontend Developer and UI/UX Specialist. Showcasing modern web projects and accessible design.">
-    <title>Portfolio | [Your Name]</title>
+    <title>Clementius Carel | Portofolio</title>
 
     <!-- Google Fonts Placeholder -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,27 +16,73 @@
 
     <!-- Core Stylesheet -->
     <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CDN for player UI classes -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- React & ReactDOM (UMD builds) - lazy loaded by default for performance -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js" defer></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" defer></script>
+    <!-- Babel for JSX support in music-player.js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" defer></script>
 
     <!-- Core Script (Deferred for performance) -->
     <script src="script.js" defer></script>
+    <!-- Music player bundle will be injected or lazily loaded when sidebar opens -->
+
+    <!-- Google Fonts for loader: serif display -->
 </head>
-<body>
+<body class="loading">
+
+    <!-- ══════════════════════════════════════
+         LOADING SCREEN
+         Type 'octocode' to enter
+    ══════════════════════════════════════ -->
+    <div id="loader" role="dialog" aria-label="Site entry" aria-modal="true">
+        <!-- Corner accents -->
+        <div class="loader-corner loader-corner--tl"></div>
+        <div class="loader-corner loader-corner--tr"></div>
+        <div class="loader-corner loader-corner--bl"></div>
+        <div class="loader-corner loader-corner--br"></div>
+
+        <!-- Eyebrow label -->
+        <p class="loader-eyebrow">Portfolio — 2026</p>
+
+        <!-- Prompt -->
+        <p class="loader-prompt">Type the passphrase to enter</p>
+
+        <!-- Word display -->
+        <div class="loader-word">
+            <div class="loader-chars" id="loaderChars" aria-hidden="true">
+                <!-- Letters rendered by JS -->
+            </div>
+            <span class="loader-cursor" id="loaderCursor"></span>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="loader-progress-track">
+            <div class="loader-progress-fill" id="loaderProgressFill"></div>
+        </div>
+
+        <!-- Hint -->
+        <p class="loader-hint" id="loaderHint">_ _ _ _ _ _ _ _</p>
+    </div>
 
     <!-- START HEADER / NAVIGATION -->
     <header class="header" role="banner">
         <div class="container header__container">
-            <a href="#home" class="logo" aria-label="Portfolio Home">
-                <span class="logo__text">MyProject</span>
-            </a>
-
-            <nav class="nav" aria-label="Primary Navigation">
-                <ul class="nav__list" id="nav-menu">
-                    <li class="nav__item"><a href="#home" class="nav__link">Home</a></li>
-                    <li class="nav__item"><a href="#about" class="nav__link">About</a></li>
-                    <li class="nav__item"><a href="#projects" class="nav__link">Projects</a></li>
-                    <li class="nav__item"><a href="#contact" class="nav__link">Contact</a></li>
-                </ul>
-            </nav>
+            <div class="header-main">
+                <a href="#home" class="logo" aria-label="Portfolio Home">
+                    <span class="logo__text">octocode</span>
+                </a>
+                <nav class="nav" aria-label="Primary Navigation">
+                    <ul class="nav__list" id="nav-menu">
+                        <li class="nav__item"><a href="#home" class="nav__link">Home</a></li>
+                        <li class="nav__item"><a href="#about" class="nav__link">About</a></li>
+                        <li class="nav__item"><a href="#projects" class="nav__link">Projects</a></li>
+                        <li class="nav__item"><a href="#contact" class="nav__link">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
 
             <div class="header__controls">
                 <button id="theme-toggle" class="control-btn" aria-label="Toggle Light and Dark Mode" title="Toggle Theme">
@@ -53,7 +99,11 @@
     </header>
     <!-- END HEADER -->
 
-    <main id="main-content">
+    <main id="main-content" style="position:relative;">
+    <!-- music toggle inside main area -->
+    <button id="music-toggle" class="control-btn" aria-label="Open music player" title="Music Player">
+        <i class="fa fa-music" aria-hidden="true"></i>
+    </button>
 
         <!-- START HERO SECTION -->
         <section id="home" class="hero section">
@@ -198,11 +248,17 @@
 
     </main>
 
+    <!-- MUSIC PLAYER SIDEBAR (hidden by default) -->
+    <aside id="music-sidebar" class="music-sidebar" aria-hidden="true">
+        <!-- the React root or fallback content lives here -->
+        <div id="music-player-root"></div>
+    </aside>
+
     <!-- START FOOTER -->
     <footer class="footer">
         <div class="container footer__container">
             <div class="footer__info">
-                <p class="footer__copyright"> &copy; 2026 Clementius Carel Sie </p>
+                <p class="footer__copyright">&copy; 2026 Clementius Carel.</p>
             </div>
             
             <ul class="social-links" aria-label="Social Media Links">
@@ -227,7 +283,173 @@
     </footer>
     <!-- END FOOTER -->
 
+    <!-- ══════════════════════════════════════
+         LOADER SCRIPT (inline, runs immediately)
+    ══════════════════════════════════════ -->
+    <script>
+    (function () {
+        const TARGET = 'octocode';
+        const CHARS_EL = document.getElementById('loaderChars');
+        const CURSOR_EL = document.getElementById('loaderCursor');
+        const FILL_EL = document.getElementById('loaderProgressFill');
+        const HINT_EL = document.getElementById('loaderHint');
+        const LOADER_EL = document.getElementById('loader');
+
+        let typed = '';
+        let done = false;
+
+        /* ── Build character spans ── */
+        TARGET.split('').forEach((ch, i) => {
+            const span = document.createElement('span');
+            span.className = 'loader-char';
+            span.dataset.index = i;
+            span.dataset.char = ch;
+            span.textContent = ch;
+            CHARS_EL.appendChild(span);
+        });
+
+        const charEls = CHARS_EL.querySelectorAll('.loader-char');
+
+        function updateHint() {
+            // Show underscores for remaining chars, dots for typed
+            const hint = TARGET.split('').map((_, i) => i < typed.length ? '·' : '_').join(' ');
+            HINT_EL.textContent = hint;
+        }
+
+        updateHint();
+
+        /* ── Key handler ── */
+        function onKey(e) {
+            if (done) return;
+            if (e.key === 'Escape') { typed = ''; refresh(); return; }
+            if (e.key.length !== 1) return; // ignore modifiers, etc.
+
+            const expectedChar = TARGET[typed.length];
+            const key = e.key.toLowerCase();
+
+            if (key === expectedChar) {
+                // Correct key
+                const idx = typed.length;
+                typed += key;
+                charEls[idx].classList.add('typed');
+                charEls[idx].classList.remove('wrong');
+
+                // Update progress bar
+                const pct = (typed.length / TARGET.length) * 100;
+                FILL_EL.style.width = pct + '%';
+
+                updateHint();
+
+                if (typed === TARGET) {
+                    // Complete!
+                    done = true;
+                    CURSOR_EL.classList.add('hidden');
+                    CHARS_EL.classList.add('done');
+                    HINT_EL.textContent = '— access granted —';
+                    HINT_EL.style.color = 'rgba(197,160,89,0.7)';
+                    document.removeEventListener('keydown', onKey);
+                    setTimeout(flyAndReveal, 400);
+                }
+            } else {
+                // Wrong key — flash the next expected char red then reset input
+                const idx = typed.length;
+                charEls[idx].classList.add('wrong');
+                setTimeout(() => charEls[idx].classList.remove('wrong'), 400);
+                // Reset entire sequence on mistake
+                setTimeout(() => {
+                    typed = '';
+                    refresh();
+                }, 350);
+            }
+        }
+
+        function refresh() {
+            charEls.forEach(el => {
+                el.classList.remove('typed', 'wrong');
+            });
+            FILL_EL.style.width = '0%';
+            updateHint();
+            HINT_EL.style.color = '';
+        }
+
+        document.addEventListener('keydown', onKey);
+
+        /* ── Fly animation to logo ── */
+        function flyAndReveal() {
+            // Get bounding rect of the typed word in the loader
+            const charsRect = CHARS_EL.getBoundingClientRect();
+
+            // Get bounding rect of the real logo in the header
+            const logoEl = document.querySelector('.logo');
+            const logoRect = logoEl ? logoEl.getBoundingClientRect() : null;
+
+            // Create a floating clone of the word
+            const clone = document.createElement('div');
+            clone.className = 'loader-fly-clone';
+            clone.textContent = TARGET;
+
+            // Match loader word font size
+            const loaderFontSize = parseFloat(window.getComputedStyle(charEls[0]).fontSize);
+            clone.style.fontSize = loaderFontSize + 'px';
+            clone.style.left = charsRect.left + 'px';
+            clone.style.top = charsRect.top + 'px';
+            clone.style.color = '#C5A059'; // gold = done state color
+
+            document.body.appendChild(clone);
+
+            // Fade out loader at same moment
+            LOADER_EL.classList.add('hidden');
+            document.body.classList.remove('loading');
+
+            if (logoRect) {
+                // Target: center clone on logo
+                const targetX = logoRect.left;
+                const targetY = logoRect.top + (logoRect.height / 2) - (loaderFontSize / 2);
+
+                // Logo font size
+                const logoFontSize = parseFloat(window.getComputedStyle(logoEl).fontSize);
+
+                clone.animate([
+                    {
+                        left: charsRect.left + 'px',
+                        top: charsRect.top + 'px',
+                        fontSize: loaderFontSize + 'px',
+                        color: '#C5A059',
+                        opacity: 1,
+                        letterSpacing: '-0.01em',
+                    },
+                    {
+                        left: targetX + 'px',
+                        top: targetY + 'px',
+                        fontSize: logoFontSize + 'px',
+                        color: '#212842',
+                        opacity: 0,
+                        letterSpacing: '0em',
+                    }
+                ], {
+                    duration: 750,
+                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                    fill: 'forwards'
+                }).onfinish = () => {
+                    clone.remove();
+                    // Flash/pop the real logo
+                    if (logoEl) {
+                        logoEl.style.transition = 'color 0.3s ease';
+                        logoEl.style.color = '#C5A059';
+                        setTimeout(() => { logoEl.style.color = ''; }, 400);
+                    }
+                };
+            } else {
+                // No logo found, just fade clone out
+                clone.animate(
+                    [{ opacity: 1 }, { opacity: 0 }],
+                    { duration: 500, easing: 'ease', fill: 'forwards' }
+                ).onfinish = () => clone.remove();
+            }
+        }
+
+    })();
+    </script>
+
 </body>
-
 </html>
-

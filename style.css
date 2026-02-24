@@ -79,6 +79,15 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Hide native scrollbars globally for a cleaner UI
+   - keeps scroll behavior but removes native scrollbar visuals
+   - cross-browser: WebKit, Firefox, and IE/Edge */
+*::-webkit-scrollbar { display: none; width: 0; height: 0; }
+html, body, * {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
 body {
     font-family: var(--font-primary);
     font-weight: 400;
@@ -162,8 +171,9 @@ h1, h2, h3, h4 {
 
 .header__container {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* logo/nav on left, controls on right */
     align-items: center;
+    position: relative; /* for absolute children */
 }
 
 .logo {
@@ -172,6 +182,20 @@ h1, h2, h3, h4 {
     color: var(--text-primary);
     text-decoration: none;
     transition: var(--transition);
+}
+
+/* wrapper around logo + nav to keep center cluster */
+.header-main {
+    display: flex;
+    align-items: center;
+    gap: 3.5rem; /* more space between logo and nav so items don't stick */
+}
+
+/* center navigation bar within header container */
+.nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .nav__list {
@@ -196,6 +220,98 @@ h1, h2, h3, h4 {
     display: flex;
     align-items: center;
     gap: 1rem;
+    position: absolute;
+    right: 1rem;
+}
+
+#music-toggle {
+    /* keep button visible while scrolling */
+    position: fixed; /* fixed to viewport so it doesn't scroll out of view */
+    top: 72px; /* place below the sticky header - adjust if your header height differs */
+    left: 1rem;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid rgba(33,40,66,0.06);
+    border-radius: 999px; /* fully round */
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    z-index: 900; /* sit below header but above page content */
+    transition: left 0.28s ease, background 0.22s ease, color 0.22s ease, top 0.22s ease;
+}
+/* use explicit left when shifted so the button sits exactly at the sidebar edge */
+#music-toggle.shifted {
+    left: 300px; /* equal to sidebar width so it's flush with the panel */
+    top: 72px;
+    transform: none;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    /* keep circular normally, but make the left edge flat when attached */
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    /* remove left border so there's no visible seam against the panel */
+    border-left: none;
+    box-shadow: 2px 0 8px rgba(33,40,66,0.08);
+    z-index: 910; /* above the sidebar edge so it visually attaches */
+}
+#music-toggle:hover {
+    color: var(--accent-color);
+}
+#music-toggle:focus {
+    outline: 2px solid rgba(0,0,0,0.08);
+    outline-offset: 2px;
+}
+
+/* sidebar that slides from left (z-index lowered so header stays above) */
+.music-sidebar {
+    position: fixed;
+    top: 0;
+    left: -320px; /* hide off-screen initially */
+    width: 300px;
+    height: 100%;
+    background: var(--card-bg);
+    box-shadow: 2px 0 12px rgba(33,40,66,0.15);
+    transition: left 0.3s ease;
+    z-index: 900; /* header is 1000 */
+    overflow-y: auto;
+    padding-top: 4rem; /* leave room for header so content doesn't start underneath logo */
+}
+.music-sidebar.open {
+    left: 0;
+}
+
+/* ensure main content doesn't shift when sidebar opens - optional overlay */
+.music-sidebar + main::before {
+    content: '';
+}
+
+/* subtle top scroll progress indicator for the music sidebar */
+.music-sidebar .scroll-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    pointer-events: none;
+    z-index: 920;
+    opacity: 0;
+    transition: opacity 180ms ease;
+}
+.music-sidebar.open .scroll-indicator { opacity: 1; }
+.music-sidebar .scroll-indicator__bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-color), var(--accent-gold));
+    transition: width 120ms linear;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 /* Theme Toggle Button */
@@ -313,9 +429,19 @@ h1, h2, h3, h4 {
 }
 
 .about__img {
-    border-radius: var(--border-radius-md);
+    /* make portrait perfectly round and add smooth animation */
+    border-radius: 50%;
     box-shadow: var(--shadow-base);
     object-fit: cover;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+}
+
+/* hover/focus animation for circular image */
+.about__img:hover,
+.about__img:focus {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 8px 20px rgba(33, 40, 66, 0.2);
 }
 
 .about__bio {
@@ -339,13 +465,14 @@ h1, h2, h3, h4 {
     border-radius: var(--border-radius-md);
     padding: 1.5rem;
     box-shadow: var(--shadow-base);
-    transition: var(--transition);
+    transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms cubic-bezier(.2,.8,.2,1);
+    will-change: transform, box-shadow;
     display: flex;
     flex-direction: column;
 }
 
 .project-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
     box-shadow: var(--shadow-hover);
 }
 
@@ -359,10 +486,12 @@ h1, h2, h3, h4 {
     width: 100%;
     aspect-ratio: 16/9;
     object-fit: cover;
-    transition: var(--transition);
+    transition: transform 300ms cubic-bezier(.2,.8,.2,1);
+    will-change: transform;
 }
 
-.project-card:hover .project-card__image img {
+.project-card:hover .project-card__image img,
+.project-card__image:hover img {
     transform: scale(1.05);
 }
 
@@ -523,6 +652,25 @@ h1, h2, h3, h4 {
         display: none; /* Hide desktop nav links */
     }
 
+    /* when menu is toggled open via script, show the nav container */
+    .nav.open {
+        display: block;
+        position: absolute;
+        top: 100%;
+        right: 2rem;
+        background: var(--bg-primary);
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--shadow-base);
+        padding: 1rem 1.5rem;
+        z-index: 1000;
+    }
+
+    .nav.open .nav__list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
     .hamburger {
         display: flex;
         flex-direction: column;
@@ -562,5 +710,483 @@ h1, h2, h3, h4 {
         order: -1; /* Ensure image stays above text on mobile */
         max-width: 300px;
         margin: 0 auto;
+        /* keep circular crop during rotation/scale */
+        overflow: hidden;
+        border-radius: 50%;
+        display: inline-block;
     }
+}
+/* ==========================================================================
+   LOADING SCREEN
+   ========================================================================== */
+
+/* Lock body scroll while loader is active */
+body.loading {
+    overflow: hidden;
+}
+
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #212842;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    /* fade out when done */
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ── Grain overlay for texture ── */
+#loader::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* ── Decorative diagonal rule lines ── */
+#loader::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 60px,
+        rgba(197, 160, 89, 0.03) 60px,
+        rgba(197, 160, 89, 0.03) 61px
+    );
+    pointer-events: none;
+}
+
+/* ── Corner accents ── */
+.loader-corner {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-color: rgba(197, 160, 89, 0.4);
+    border-style: solid;
+}
+.loader-corner--tl { top: 2rem; left: 2rem; border-width: 1px 0 0 1px; }
+.loader-corner--tr { top: 2rem; right: 2rem; border-width: 1px 1px 0 0; }
+.loader-corner--bl { bottom: 2rem; left: 2rem; border-width: 0 0 1px 1px; }
+.loader-corner--br { bottom: 2rem; right: 2rem; border-width: 0 1px 1px 0; }
+
+/* ── Subtle top label ── */
+.loader-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(197, 160, 89, 0.6);
+    margin-bottom: 3.5rem;
+    opacity: 0;
+    animation: loaderFadeUp 0.8s ease forwards 0.3s;
+}
+
+/* ── Type prompt ── */
+.loader-prompt {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(240, 231, 213, 0.3);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: loaderFadeUp 0.8s ease forwards 0.5s;
+}
+
+/* ── Main word display ── */
+.loader-word {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 110px;
+    margin-bottom: 2.5rem;
+}
+
+/* Characters container */
+.loader-chars {
+    display: flex;
+    gap: 0.04em;
+}
+
+/* Each character span */
+.loader-char {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: clamp(52px, 8vw, 88px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: #F0E7D5;
+    line-height: 1;
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.18s ease, transform 0.22s ease, color 0.3s ease;
+}
+
+.loader-char.typed {
+    opacity: 1;
+    transform: translateY(0);
+    color: #F0E7D5;
+}
+
+/* Wrong character shake feedback */
+.loader-char.wrong {
+    color: #e05252;
+    animation: loaderShake 0.35s ease;
+}
+
+/* Cursor blink at end of typed text */
+.loader-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 0.85em;
+    background: #C5A059;
+    border-radius: 2px;
+    margin-left: 4px;
+    align-self: center;
+    animation: loaderBlink 1s step-end infinite;
+    opacity: 1;
+    transition: opacity 0.2s;
+}
+.loader-cursor.hidden { opacity: 0; }
+
+/* ── Progress bar under word ── */
+.loader-progress-track {
+    width: clamp(200px, 40vw, 340px);
+    height: 2px;
+    background: rgba(240, 231, 213, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    opacity: 0;
+    animation: loaderFadeUp 0.8s ease forwards 0.6s;
+}
+
+.loader-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #C5A059, #F0E7D5);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.15s ease;
+}
+
+/* ── Hint text below bar ── */
+.loader-hint {
+    margin-top: 1.4rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(240, 231, 213, 0.22);
+    letter-spacing: 0.08em;
+    opacity: 0;
+    animation: loaderFadeUp 0.8s ease forwards 0.7s;
+    transition: color 0.3s ease;
+    height: 16px;
+}
+
+/* ── "Access granted" state ── */
+.loader-chars.done .loader-char {
+    color: #C5A059;
+}
+
+/* ── Flying word animation to logo ── */
+.loader-fly-clone {
+    position: fixed;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-weight: 400;
+    color: #212842;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10000;
+    transition: none; /* JS-driven via WAAPI */
+}
+
+/* ── Keyframes ── */
+@keyframes loaderFadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loaderBlink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+@keyframes loaderShake {
+    0%,100% { transform: translateX(0); }
+    20%     { transform: translateX(-6px); }
+    40%     { transform: translateX(6px); }
+    60%     { transform: translateX(-4px); }
+    80%     { transform: translateX(4px); }
+}
+
+@keyframes loaderFlash {
+    0%,100% { background: #212842; }
+    50%     { background: #2c334b; }
+}
+/* ==========================================================================
+   CUSTOM CURSOR
+   ========================================================================== */
+*, *::before, *::after { cursor: none !important; }
+
+#cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 6px; height: 6px;
+    background: var(--accent-gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.3s ease;
+    will-change: transform;
+}
+
+#cursor-ring {
+    position: fixed;
+    top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1.5px solid rgba(197, 160, 89, 0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    transform: translate(-50%, -50%);
+    transition: width 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                height 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                border-color 0.3s ease,
+                background 0.3s ease,
+                opacity 0.3s ease;
+    will-change: transform;
+}
+
+/* Hover state — ring expands and fills slightly */
+body.cursor-hover #cursor-ring {
+    width: 56px; height: 56px;
+    border-color: rgba(197, 160, 89, 0.8);
+    background: rgba(197, 160, 89, 0.06);
+}
+body.cursor-hover #cursor-dot {
+    width: 4px; height: 4px;
+    background: var(--accent-gold);
+}
+
+/* Click state — ring shrinks fast */
+body.cursor-click #cursor-ring {
+    width: 20px; height: 20px;
+    border-color: var(--accent-gold);
+    background: rgba(197, 160, 89, 0.15);
+    transition: width 0.1s ease, height 0.1s ease;
+}
+body.cursor-click #cursor-dot {
+    width: 8px; height: 8px;
+}
+
+/* Text cursor override */
+body.cursor-text #cursor-ring {
+    width: 3px; height: 32px;
+    border-radius: 2px;
+    border-color: var(--accent-gold);
+}
+body.cursor-text #cursor-dot { opacity: 0; }
+
+/* ==========================================================================
+   HERO CANVAS BACKGROUND
+   ========================================================================== */
+.hero {
+    position: relative;
+    overflow: hidden;
+}
+
+#hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Vignette overlay — darkens edges for drama */
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse 80% 70% at 50% 50%,
+        transparent 40%,
+        rgba(var(--bg-primary-rgb, 240, 231, 213), 0.55) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+body.dark-theme .hero::after {
+    background: radial-gradient(
+        ellipse 80% 70% at 50% 50%,
+        transparent 40%,
+        rgba(33, 40, 66, 0.65) 100%
+    );
+}
+
+/* Push hero content above canvas */
+.hero__container {
+    position: relative;
+    z-index: 2;
+}
+
+/* ── Hero title character animation ── */
+.hero__title .word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    margin-right: 0.25em;
+}
+.hero__title .word:last-child { margin-right: 0; }
+
+.hero__title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(105%);
+    animation: heroCharReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero__subtitle {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: heroFadeUp 0.8s ease forwards;
+}
+
+.hero__actions {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: heroFadeUp 0.8s ease forwards;
+}
+
+/* Idle float on highlighted name */
+.hero__title .text-highlight {
+    display: inline-block;
+    animation: heroNameFloat 4s ease-in-out infinite;
+    animation-delay: 1.4s;
+}
+
+@keyframes heroCharReveal {
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroFadeUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroNameFloat {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-5px); }
+}
+
+/* ==========================================================================
+   SCROLL REVEAL
+   ========================================================================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger children of a reveal-group */
+.reveal-group > * {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-group.revealed > *:nth-child(1) { opacity:1; transform:translateY(0); transition-delay: 0s; }
+.reveal-group.revealed > *:nth-child(2) { opacity:1; transform:translateY(0); transition-delay: 0.1s; }
+.reveal-group.revealed > *:nth-child(3) { opacity:1; transform:translateY(0); transition-delay: 0.2s; }
+.reveal-group.revealed > *:nth-child(4) { opacity:1; transform:translateY(0); transition-delay: 0.3s; }
+.reveal-group.revealed > *:nth-child(5) { opacity:1; transform:translateY(0); transition-delay: 0.4s; }
+.reveal-group.revealed > *:nth-child(6) { opacity:1; transform:translateY(0); transition-delay: 0.5s; }
+
+/* Section title reveal with underline sweep */
+.section-title {
+    overflow: hidden;
+}
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--accent-gold);
+    transition: width 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+.reveal-group.revealed .section-title::after,
+.revealed.section-title::after {
+    width: 100%;
+}
+
+/* ==========================================================================
+   3D TILT PROJECT CARDS
+   ========================================================================== */
+.project-card {
+    transform-style: preserve-3d;
+    transform: perspective(900px) rotateX(0deg) rotateY(0deg);
+    transition: box-shadow 0.4s ease, transform 0.1s ease;
+    will-change: transform;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Sheen overlay — tracks cursor position via JS custom props */
+.project-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at var(--mx, 50%) var(--my, 50%),
+        rgba(255,255,255,0.08) 0%,
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+    border-radius: var(--border-radius-md);
+}
+.project-card:hover::before { opacity: 1; }
+
+/* Gold edge glow on hover */
+.project-card:hover {
+    box-shadow: 0 24px 60px rgba(33,40,66,0.18),
+                0 0 0 1px rgba(197,160,89,0.2);
+}
+
+/* ==========================================================================
+   MUSIC TOGGLE — hide-on-scroll tweak
+   ========================================================================== */
+#music-toggle {
+    transition: left 0.28s ease, background 0.22s ease, color 0.22s ease,
+                top 0.22s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+#music-toggle.hidden-on-scroll {
+    opacity: 0;
+    transform: translateX(-8px);
+    pointer-events: none;
 }
