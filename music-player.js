@@ -5,7 +5,7 @@ console.log('Music Player executing...');
 (function () {
     const { useState, useEffect, useRef } = React;
 
-    const PLAYLIST_ID = 'PLUawT7f_vhm0O-7nUOn8-76Yp1D8S8C1n';
+    const PLAYLIST_ID = 'PLZAe7ErrqpacQYh2rLxPcTYpvHoxg16hr';
     const MOCK_QUEUE = [
       { id: 0, title: "Lo-fi Chill Beats", artist: "Clementius Selection", duration: "3:45", thumbnail: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&h=400&fit=crop" },
       { id: 1, title: "Night Drive Synth", artist: "Creative Flow", duration: "4:12", thumbnail: "https://images.unsplash.com/photo-1557683316-973673baf926?w=400&h=400&fit=crop" },

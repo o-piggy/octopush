@@ -19,12 +19,21 @@
     <!-- Tailwind CDN for player UI classes -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-    <!-- React & ReactDOM (UMD builds) - lazy loaded by default for performance -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js" defer></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" defer></script>
-    <!-- Babel for JSX support in music-player.js -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js" defer></script>
+    <!-- React & ReactDOM (UMD builds) - loaded synchronously for music player -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <iframe width="560" height="315" 
+        src="https://www.youtube-nocookie.com/embed/VIDEO_ID" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>
 
+
+
+    
     <!-- Core Script (Deferred for performance) -->
     <script src="script.js" defer></script>
     <!-- Music player bundle will be injected or lazily loaded when sidebar opens -->
@@ -35,7 +44,7 @@
 
     <!-- ══════════════════════════════════════
          LOADING SCREEN
-         Type 'octocode' to enter
+         Animated 'octocode' assembly
     ══════════════════════════════════════ -->
     <div id="loader" role="dialog" aria-label="Site entry" aria-modal="true">
         <!-- Corner accents -->
@@ -48,14 +57,13 @@
         <p class="loader-eyebrow">Portfolio — 2026</p>
 
         <!-- Prompt -->
-        <p class="loader-prompt">Type the passphrase to enter</p>
+        <p class="loader-prompt">Welcome</p>
 
         <!-- Word display -->
         <div class="loader-word">
             <div class="loader-chars" id="loaderChars" aria-hidden="true">
                 <!-- Letters rendered by JS -->
             </div>
-            <span class="loader-cursor" id="loaderCursor"></span>
         </div>
 
         <!-- Progress bar -->
@@ -64,7 +72,7 @@
         </div>
 
         <!-- Hint -->
-        <p class="loader-hint" id="loaderHint">_ _ _ _ _ _ _ _</p>
+        <p class="loader-hint" id="loaderHint">Loading...</p>
     </div>
 
     <!-- START HEADER / NAVIGATION -->
@@ -174,19 +182,19 @@
                     <!-- Project Card 2 -->
                     <article class="project-card">
                         <div class="project-card__image">
-                            <img src="assets/original-351304631c68bd5e9b1aec35bb5c2b1a.webp" alt="Preview of E-Commerce Platform" loading="lazy">
+                            <img src="assets/original-64ed93538bfe7ca4bb9fd0fd53e13fdc.webp" alt="Preview of eCommerce Website" loading="lazy">
                         </div>
                         <div class="project-card__content">
-                            <h4 class="project-card__title">EcoStore Platform</h4>
-                            <p class="project-card__description">A fully responsive e-commerce solution with integrated payment gateways and headless CMS support.</p>
+                            <h4 class="project-card__title">ShopHub</h4>
+                            <p class="project-card__description">A high-performance eCommerce platform with advanced filtering, cart management, and payment integration.</p>
                             <div class="project-card__tech-stack">
                                 <span class="tag">Next.js</span>
-                                <span class="tag">Tailwind CSS</span>
+                                <span class="tag">Node.js</span>
                                 <span class="tag">Stripe</span>
                             </div>
                             <div class="project-card__links">
-                                <a href="#" class="project-link project-link--code" aria-label="View Source Code for EcoStore on GitHub">View Code</a>
-                                <a href="#" class="project-link project-link--live" aria-label="View Live Demo of EcoStore">Live Demo</a>
+                                <a href="#" class="project-link project-link--code" aria-label="View Source Code for ShopHub on GitHub">View Code</a>
+                                <a href="#" class="project-link project-link--live" aria-label="View Live Demo of ShopHub">Live Demo</a>
                             </div>
                         </div>
                     </article>
@@ -194,19 +202,19 @@
                     <!-- Project Card 3 -->
                     <article class="project-card">
                         <div class="project-card__image">
-                            <img src="assets/project-management-selar.co-65f60d5694847.jpg" alt="Preview of Task Manager App" loading="lazy">
+                            <img src="assets/original-8fa0a50f78b7f79d10b3e9c7d1e94a0c.webp" alt="Preview of Weather App UI" loading="lazy">
                         </div>
                         <div class="project-card__content">
-                            <h4 class="project-card__title">ZenTask Manager</h4>
-                            <p class="project-card__description">A minimalist task management tool built with a focus on keyboard navigation and mental clarity.</p>
+                            <h4 class="project-card__title">Weather Wise</h4>
+                            <p class="project-card__description">A sleek weather forecasting app with real-time data, geolocation support, and responsive design.</p>
                             <div class="project-card__tech-stack">
-                                <span class="tag">HTML5</span>
-                                <span class="tag">Sass</span>
-                                <span class="tag">JavaScript</span>
+                                <span class="tag">React</span>
+                                <span class="tag">API Integration</span>
+                                <span class="tag">Tailwind</span>
                             </div>
                             <div class="project-card__links">
-                                <a href="#" class="project-link project-link--code" aria-label="View Source Code for ZenTask on GitHub">View Code</a>
-                                <a href="#" class="project-link project-link--live" aria-label="View Live Demo of ZenTask">Live Demo</a>
+                                <a href="#" class="project-link project-link--code" aria-label="View Source Code for Weather Wise on GitHub">View Code</a>
+                                <a href="#" class="project-link project-link--live" aria-label="View Live Demo of Weather Wise">Live Demo</a>
                             </div>
                         </div>
                     </article>
@@ -218,29 +226,23 @@
 
         <!-- START CONTACT SECTION -->
         <section id="contact" class="contact section">
-            <div class="container contact__container">
-                <div class="contact__header">
-                    <h3 class="section-title">Let's Connect</h3>
-                    <p>Have a project in mind or just want to say hi? My inbox is always open.</p>
-                </div>
-                
-                <form action="#" method="POST" class="contact-form">
+            <div class="container">
+                <h3 class="section-title">Get In Touch</h3>
+                <p class="contact__description">I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.</p>
+                <form class="contact-form" aria-label="Contact form">
                     <div class="form-group">
-                        <label for="user-name" class="form-label">Full Name</label>
-                        <input type="text" id="user-name" name="name" class="form-input" placeholder="e.g. John Doe" required>
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Your Name" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="user-email" class="form-label">Email Address</label>
-                        <input type="email" id="user-email" name="email" class="form-input" placeholder="e.g. john@example.com" required>
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="user-message" class="form-label">Message</label>
-                        <textarea id="user-message" name="message" class="form-textarea" rows="5" placeholder="Tell me about your project..." required></textarea>
+                        <label for="message" class="form-label">Message</label>
+                        <textarea id="message" name="message" class="form-input form-textarea" placeholder="Your message here..." rows="5" required></textarea>
                     </div>
-
-                    <button type="submit" class="btn btn--primary btn--full">Send Message</button>
+                    <button type="submit" class="btn btn--primary">Send Message</button>
                 </form>
             </div>
         </section>
@@ -257,25 +259,21 @@
     <!-- START FOOTER -->
     <footer class="footer">
         <div class="container footer__container">
-            <div class="footer__info">
-                <p class="footer__copyright">&copy; 2026 Clementius Carel.</p>
-            </div>
-            
-            <ul class="social-links" aria-label="Social Media Links">
-                <li class="social-links__item">
-                    <a href="#" class="social-link" aria-label="GitHub Profile">
-                        <!-- SVG Placeholder -->
-                        <svg class="icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <p class="footer__text">&copy; 2026 Clementius Carel. All rights reserved.</p>
+            <ul class="footer__social" aria-label="Social media links">
+                <li class="footer__social-item">
+                    <a href="https://github.com/yourusername" class="footer__social-link" aria-label="GitHub Profile" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-github" aria-hidden="true"></i>
                     </a>
                 </li>
-                <li class="social-links__item">
-                    <a href="#" class="social-link" aria-label="LinkedIn Profile">
-                        <svg class="icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                <li class="footer__social-item">
+                    <a href="https://linkedin.com/in/yourusername" class="footer__social-link" aria-label="LinkedIn Profile" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-linkedin" aria-hidden="true"></i>
                     </a>
                 </li>
-                <li class="social-links__item">
-                    <a href="#" class="social-link" aria-label="Twitter Profile">
-                        <svg class="icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                <li class="footer__social-item">
+                    <a href="https://twitter.com/yourusername" class="footer__social-link" aria-label="Twitter Profile" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-twitter" aria-hidden="true"></i>
                     </a>
                 </li>
             </ul>
@@ -285,94 +283,69 @@
 
     <!-- ══════════════════════════════════════
          LOADER SCRIPT (inline, runs immediately)
+         Animated letter assembly version
     ══════════════════════════════════════ -->
     <script>
     (function () {
         const TARGET = 'octocode';
         const CHARS_EL = document.getElementById('loaderChars');
-        const CURSOR_EL = document.getElementById('loaderCursor');
         const FILL_EL = document.getElementById('loaderProgressFill');
         const HINT_EL = document.getElementById('loaderHint');
         const LOADER_EL = document.getElementById('loader');
 
-        let typed = '';
-        let done = false;
-
-        /* ── Build character spans ── */
+        /* ── Build character spans with random positions ── */
+        const charEls = [];
         TARGET.split('').forEach((ch, i) => {
             const span = document.createElement('span');
-            span.className = 'loader-char';
+            span.className = 'loader-char loader-char-animated';
             span.dataset.index = i;
             span.dataset.char = ch;
             span.textContent = ch;
+            
+            // Set random starting position (scattered around viewport)
+            const randomX = (Math.random() - 0.5) * 200; // -100px to 100px
+            const randomY = (Math.random() - 0.5) * 200;
+            const randomRotate = (Math.random() - 0.5) * 360; // random rotation
+            const randomScale = 0.3 + Math.random() * 0.5; // scale between 0.3 and 0.8
+            
+            span.style.setProperty('--start-x', `${randomX}px`);
+            span.style.setProperty('--start-y', `${randomY}px`);
+            span.style.setProperty('--start-rotate', `${randomRotate}deg`);
+            span.style.setProperty('--start-scale', randomScale);
+            
             CHARS_EL.appendChild(span);
+            charEls.push(span);
         });
 
-        const charEls = CHARS_EL.querySelectorAll('.loader-char');
-
-        function updateHint() {
-            // Show underscores for remaining chars, dots for typed
-            const hint = TARGET.split('').map((_, i) => i < typed.length ? '·' : '_').join(' ');
-            HINT_EL.textContent = hint;
-        }
-
-        updateHint();
-
-        /* ── Key handler ── */
-        function onKey(e) {
-            if (done) return;
-            if (e.key === 'Escape') { typed = ''; refresh(); return; }
-            if (e.key.length !== 1) return; // ignore modifiers, etc.
-
-            const expectedChar = TARGET[typed.length];
-            const key = e.key.toLowerCase();
-
-            if (key === expectedChar) {
-                // Correct key
-                const idx = typed.length;
-                typed += key;
-                charEls[idx].classList.add('typed');
-                charEls[idx].classList.remove('wrong');
-
-                // Update progress bar
-                const pct = (typed.length / TARGET.length) * 100;
-                FILL_EL.style.width = pct + '%';
-
-                updateHint();
-
-                if (typed === TARGET) {
-                    // Complete!
-                    done = true;
-                    CURSOR_EL.classList.add('hidden');
-                    CHARS_EL.classList.add('done');
-                    HINT_EL.textContent = '— access granted —';
-                    HINT_EL.style.color = 'rgba(197,160,89,0.7)';
-                    document.removeEventListener('keydown', onKey);
-                    setTimeout(flyAndReveal, 400);
-                }
-            } else {
-                // Wrong key — flash the next expected char red then reset input
-                const idx = typed.length;
-                charEls[idx].classList.add('wrong');
-                setTimeout(() => charEls[idx].classList.remove('wrong'), 400);
-                // Reset entire sequence on mistake
+        /* ── Animate letters into position ── */
+        function animateLetters() {
+            // Update hint
+            HINT_EL.textContent = 'Assembling...';
+            
+            charEls.forEach((el, i) => {
+                // Stagger the animation for each letter
                 setTimeout(() => {
-                    typed = '';
-                    refresh();
-                }, 350);
-            }
-        }
-
-        function refresh() {
-            charEls.forEach(el => {
-                el.classList.remove('typed', 'wrong');
+                    el.classList.add('assembled');
+                    
+                    // Update progress bar
+                    const progress = ((i + 1) / TARGET.length) * 100;
+                    FILL_EL.style.width = progress + '%';
+                    
+                    // When last letter is done
+                    if (i === TARGET.length - 1) {
+                        setTimeout(() => {
+                            CHARS_EL.classList.add('done');
+                            HINT_EL.textContent = '— access granted —';
+                            HINT_EL.style.color = 'rgba(197,160,89,0.7)';
+                            setTimeout(flyAndReveal, 600);
+                        }, 400);
+                    }
+                }, i * 120); // 120ms delay between each letter
             });
-            FILL_EL.style.width = '0%';
-            updateHint();
-            HINT_EL.style.color = '';
         }
 
-        document.addEventListener('keydown', onKey);
+        // Start animation after a brief delay
+        setTimeout(animateLetters, 800);
 
         /* ── Fly animation to logo ── */
         function flyAndReveal() {
