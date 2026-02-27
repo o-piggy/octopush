@@ -19,21 +19,12 @@
     <!-- Tailwind CDN for player UI classes -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-    <!-- React & ReactDOM (UMD builds) - loaded synchronously for music player -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <iframe width="560" height="315" 
-        src="https://www.youtube-nocookie.com/embed/VIDEO_ID" 
-        title="YouTube video player" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-    </iframe>
+    <!-- React & ReactDOM (UMD builds) - lazy loaded by default for performance -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js" defer></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" defer></script>
+    <!-- Babel for JSX support in music-player.js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-
-
-    
     <!-- Core Script (Deferred for performance) -->
     <script src="script.js" defer></script>
     <!-- Music player bundle will be injected or lazily loaded when sidebar opens -->

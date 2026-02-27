@@ -5,12 +5,21 @@ console.log('Music Player executing...');
 (function () {
     const { useState, useEffect, useRef } = React;
 
-    const PLAYLIST_ID = 'PLZAe7ErrqpacQYh2rLxPcTYpvHoxg16hr';
+    const PLAYLIST_ID = 'PLZAe7ErrqpacQYh2rLxPcTYpvHoxg16hr'; // Replace with your YouTube playlist ID
+    // To get your playlist ID:
+    // 1. Create a PUBLIC YouTube playlist
+    // 2. The URL will look like: youtube.com/playlist?list=PLxxxxxxxxxxxxxx
+    // 3. Copy everything after "list=" - that's your playlist ID
+    
     const MOCK_QUEUE = [
-      { id: 0, title: "Lo-fi Chill Beats", artist: "Clementius Selection", duration: "3:45", thumbnail: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&h=400&fit=crop" },
-      { id: 1, title: "Night Drive Synth", artist: "Creative Flow", duration: "4:12", thumbnail: "https://images.unsplash.com/photo-1557683316-973673baf926?w=400&h=400&fit=crop" },
-      { id: 2, title: "Coffee Shop Jazz", artist: "Design Deep Work", duration: "2:58", thumbnail: "https://images.unsplash.com/photo-1445013066212-70271450c010?w=400&h=400&fit=crop" },
-      { id: 3, title: "Deep Focus Tech", artist: "Senior Engineering", duration: "5:20", thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop" },
+      { id: 0, title: "Track 1", artist: "Your Playlist", duration: "3:45", thumbnail: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop" },
+      { id: 1, title: "Track 2", artist: "Your Playlist", duration: "4:12", thumbnail: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop" },
+      { id: 2, title: "Track 3", artist: "Your Playlist", duration: "2:58", thumbnail: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop" },
+      { id: 3, title: "Track 4", artist: "Your Playlist", duration: "5:20", thumbnail: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=400&fit=crop" },
+      { id: 4, title: "Track 5", artist: "Your Playlist", duration: "4:05", thumbnail: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=400&h=400&fit=crop" },
+      { id: 5, title: "Track 6", artist: "Your Playlist", duration: "3:30", thumbnail: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=400&h=400&fit=crop" },
+      { id: 6, title: "Track 7", artist: "Your Playlist", duration: "4:45", thumbnail: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&h=400&fit=crop" },
+      { id: 7, title: "Track 8", artist: "Your Playlist", duration: "3:15", thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop" },
     ];
 
     /* Inline SVG Icons */

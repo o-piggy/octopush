@@ -16,14 +16,6 @@
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Check if required libraries are loaded
-    if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
-        console.warn('React or ReactDOM not loaded. Music player will not work.');
-    }
-    if (typeof Babel === 'undefined') {
-        console.warn('Babel not loaded. Music player JSX transformation will fail.');
-    }
 
     /* ------------------------------------------------------------------
        1. Mobile navigation toggle
@@ -120,37 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadMusicPlayer() {
         if (playerScriptLoaded) return;
-        
-        // Check if Babel is loaded
-        if (typeof Babel === 'undefined') {
-            console.error('Babel not loaded! Music player requires Babel for JSX transformation.');
-            return;
-        }
-        
         try {
             const res = await fetch('music-player.js');
-            if (!res.ok) throw new Error(`Failed to fetch music-player.js: ${res.status}`);
-            
             const code = await res.text();
             const transformed = Babel.transform(code, { presets: ['react'] }).code;
             const script = document.createElement('script');
             script.textContent = transformed;
             document.body.appendChild(script);
             playerScriptLoaded = true;
-            console.log('Music player loaded successfully!');
-        } catch (err) { 
-            console.error('Failed to load music player:', err);
-            // Show user-friendly error in sidebar
-            const root = document.getElementById('music-player-root');
-            if (root) {
-                root.innerHTML = `
-                    <div style="padding: 20px; text-align: center; color: var(--text-muted);">
-                        <p>Failed to load music player.</p>
-                        <p style="font-size: 12px; margin-top: 10px;">Check console for details.</p>
-                    </div>
-                `;
-            }
-        }
+        } catch (err) { console.error('Failed to load music player', err); }
     }
 
     if (musicToggle && musicSidebar) {
